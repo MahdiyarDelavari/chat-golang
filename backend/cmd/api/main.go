@@ -4,6 +4,9 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -16,20 +19,32 @@ func main() {
 	}
 	log.Println("Starting server on :8080")
 
-	err := server.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
-		log.Fatal("Error starting server: ", err)
-	}
+	shutdownCh:= make(chan os.Signal, 1)
+	signal.Notify(shutdownCh, os.Interrupt,syscall.SIGTERM,syscall.SIGINT)
+
+	go func () {
+		err:=server.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			log.Fatal("Error starting server: ", err)
+		}
+	}()
+
+	sig:= <- shutdownCh
+	log.Printf("Received signal %s, shutting down server...", sig)
+
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10* time.Second)
 	defer cancel()
 
-	err = server.Shutdown(ctx)
+	err := server.Shutdown(ctx)
 	if err != nil {
 		log.Fatal("Error shutting down server: ", err)
 	} else{
 		log.Println("Server gracefully stopped")
 	}
+	
+	signal.Stop(shutdownCh)
+	close(shutdownCh)
 
-	log.Println("Server stopped")
+	log.Println("--Server stopped successfully--")
 }
