@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/internal/config"
 	"context"
 	"log"
 	"net/http"
@@ -11,10 +12,13 @@ import (
 )
 
 func main() {
+
+	cfg := config.LoadConfig()
+
 	mux := http.NewServeMux()
 
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    cfg.HTTPServer.Address,
 		Handler: mux,
 	}
 	log.Println("Starting server on :8080")
