@@ -28,10 +28,10 @@ func LoadConfig() *Config {
 	flag.StringVar(&envPath, "config", "", "path to .env file")
 	flag.Parse()
 
-	if envPath != "" {
+	if envPath == "" {
 		envPath = os.Getenv("CONFIG_PATH")
 	}
-	if envPath != "" {
+	if envPath == "" {
 		envPath = "config/dev.env"
 	}
 	err := cleanenv.ReadConfig(envPath, &cfg)

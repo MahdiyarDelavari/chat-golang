@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/config"
+	"backend/internal/db"
 	"context"
 	"log"
 	"net/http"
@@ -14,6 +15,9 @@ import (
 func main() {
 
 	cfg := config.LoadConfig()
+
+	db.InitDB(cfg.DBPath,cfg.DBName)
+	defer db.CloseDB()
 
 	mux := http.NewServeMux()
 
