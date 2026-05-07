@@ -3,6 +3,7 @@ package main
 import (
 	"backend/internal/config"
 	"backend/internal/db"
+	"backend/internal/routes"
 	"context"
 	"log"
 	"net/http"
@@ -21,7 +22,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/health-check-http", handleHealthCheckHTTP)
+	routes.RegisterRoutes(mux)
 
 	server := &http.Server{
 		Addr:    cfg.HTTPServer.Address,
@@ -61,9 +62,4 @@ func main() {
 	close(shutdownCh)
 
 	log.Println("--Server stopped successfully--")
-}
-
-func handleHealthCheckHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("API is healthy:)"))
 }
