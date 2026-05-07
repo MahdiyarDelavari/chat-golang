@@ -5,6 +5,7 @@ import (
 	"backend/internal/db"
 	"backend/internal/middlewares"
 	"backend/internal/routes"
+	"backend/internal/utils"
 	"context"
 	"log"
 	"net/http"
@@ -17,6 +18,7 @@ import (
 func main() {
 
 	cfg := config.LoadConfig()
+	utils.InitJWT(cfg.JWTKey)
 
 	db.InitDB(cfg.DBPath,cfg.DBName)
 	defer db.CloseDB()

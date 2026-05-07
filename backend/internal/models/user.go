@@ -11,10 +11,10 @@ type User struct {
 	Name                 string `json:"name"`
 	Email                string `json:"email"`
 	Password             string `json:"-"`
-	RefreshTokenWeb      string `json:"-"`
-	RefreshTokenWebAt    time.Time `json:"-"`
-	RefreshTokenMobile   string `json:"-"`
-	RefreshTokenMobileAt time.Time `json:"-"`
+	RefreshTokenWeb      *string `json:"-"`
+	RefreshTokenWebAt    *time.Time `json:"-"`
+	RefreshTokenMobile   *string `json:"-"`
+	RefreshTokenMobileAt *time.Time `json:"-"`
 	CreatedAt            time.Time `json:"created_at"`
 }
 
