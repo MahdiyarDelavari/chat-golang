@@ -24,10 +24,11 @@ func main() {
 	mux := routes.RegisterRoutes()
 
 	loggerMux := middlewares.LoggingMiddleware(mux)
+	corsMux := middlewares.CorsMiddleware(loggerMux)
 
 	server := &http.Server{
 		Addr:    cfg.HTTPServer.Address,
-		Handler: loggerMux,
+		Handler: corsMux,
 	}
 
 	shutdownCh:= make(chan os.Signal, 1)
