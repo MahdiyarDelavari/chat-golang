@@ -21,16 +21,22 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	mux.HandleFunc("GET /api/health-check-http", handleHealthCheckHTTP)
+
 	server := &http.Server{
 		Addr:    cfg.HTTPServer.Address,
 		Handler: mux,
 	}
-	log.Println("Starting server on :8080")
 
 	shutdownCh:= make(chan os.Signal, 1)
 	signal.Notify(shutdownCh, os.Interrupt,syscall.SIGTERM,syscall.SIGINT)
 
 	go func () {
+
+		log.Printf("server is running at http://%s",cfg.HTTPServer.Address)
+
+		log.Printf("Health Check Endpoint: http://%s/api/health-check-http",cfg.HTTPServer.Address)
+
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			log.Fatal("Error starting server: ", err)
@@ -55,4 +61,9 @@ func main() {
 	close(shutdownCh)
 
 	log.Println("--Server stopped successfully--")
+}
+
+func handleHealthCheckHTTP(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("API is healthy:)"))
 }
