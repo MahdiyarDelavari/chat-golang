@@ -8,5 +8,8 @@ func RegisterRoutes() *http.ServeMux {
 	//Health check route
 	mux.HandleFunc("GET /api/health-check-http", handleHealthCheckHTTP)
 
+	//Auths
+	mux.HandleFunc("POST /api/register-email",handlerEmailRegister) 
+
 	return mux
 }
