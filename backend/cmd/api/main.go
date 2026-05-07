@@ -3,6 +3,7 @@ package main
 import (
 	"backend/internal/config"
 	"backend/internal/db"
+	"backend/internal/middlewares"
 	"backend/internal/routes"
 	"context"
 	"log"
@@ -20,13 +21,13 @@ func main() {
 	db.InitDB(cfg.DBPath,cfg.DBName)
 	defer db.CloseDB()
 
-	mux := http.NewServeMux()
+	mux := routes.RegisterRoutes()
 
-	routes.RegisterRoutes(mux)
+	loggerMux := middlewares.LoggingMiddleware(mux)
 
 	server := &http.Server{
 		Addr:    cfg.HTTPServer.Address,
-		Handler: mux,
+		Handler: loggerMux,
 	}
 
 	shutdownCh:= make(chan os.Signal, 1)
