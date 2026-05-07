@@ -2,6 +2,7 @@ package models
 
 import (
 	"backend/internal/db"
+	"database/sql"
 	"time"
 )
 
@@ -23,6 +24,9 @@ func GetUserByEmail(email string) (*User, error) {
 
 	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.RefreshTokenWeb, &user.RefreshTokenWebAt, &user.RefreshTokenMobile, &user.RefreshTokenMobileAt, &user.CreatedAt)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil

@@ -35,10 +35,14 @@ func main() {
 	signal.Notify(shutdownCh, os.Interrupt,syscall.SIGTERM,syscall.SIGINT)
 
 	go func () {
-
+		// Log server start and available endpoints
 		log.Printf("server is running at http://%s",cfg.HTTPServer.Address)
 
+		// Log health check endpoint
 		log.Printf("Health Check Endpoint: http://%s/api/health-check-http",cfg.HTTPServer.Address)
+		
+		// Log auth endpoints
+		log.Printf("Email register, POST http://%s/api/auth/register-email",cfg.HTTPServer.Address)
 
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {

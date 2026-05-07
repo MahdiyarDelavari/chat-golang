@@ -1,0 +1,15 @@
+### Health Check
+GET http://localhost:8082/api/health-check-http
+Accept: application/json
+
+
+### Register User (Email)
+POST http://localhost:8082/api/auth/register-email
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "John",
+  "email": "john@example.com",
+  "password": "password123"
+}
