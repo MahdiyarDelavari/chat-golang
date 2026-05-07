@@ -1,8 +1,10 @@
 package routes
 
-import "net/http"
+import (
+	"backend/internal/utils"
+	"net/http"
+)
 
 func handleHealthCheckHTTP(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("API is healthy:)"))
+	utils.JSON(w, http.StatusOK, true, "API is healthy:)", nil)
 }
