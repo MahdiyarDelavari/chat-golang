@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"backend/internal/models"
 	"backend/internal/utils"
 	"encoding/json"
 	"net/http"
@@ -44,6 +45,6 @@ func handlerEmailRegister(w http.ResponseWriter, r *http.Request) {
 		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while creating user", nil)
 		return
 	}
-	
+
 	utils.JSON(w, http.StatusCreated, true, "User created successfully", user)
 }
