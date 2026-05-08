@@ -1,6 +1,9 @@
 package realtime
 
-import "sync"
+import (
+	"log"
+	"sync"
+)
 
 type Hub struct {
 	Clients map[int64]map[*Client]struct{}
@@ -10,5 +13,20 @@ type Hub struct {
 func NewHub() *Hub {
 	return &Hub{
 		Clients: make(map[int64]map[*Client]struct{}),
+	}
+}
+
+func (h *Hub) broadcastToAll(event Event) {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	for _, connections := range h.Clients {
+		for client := range connections {
+			select {
+			case client.send <- event:
+			default:
+				log.Printf("Client send channel full, closing connection for user %d", client.User.ID)
+			}
+		}
 	}
 }
