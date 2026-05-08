@@ -18,7 +18,7 @@ func RegisterRoutes(hub *realtime.Hub) *http.ServeMux {
 	mux.HandleFunc("POST /api/auth/login-email",handlerEmailLogin)
 	mux.Handle("POST /api/auth/logout",middlewares.Authenticate(http.HandlerFunc(handlerLogout)))
 	mux.HandleFunc("POST /api/auth/refresh-session",handlerRefreshSession)
-	mux.Handle("GET /api/auth/current-user",middlewares.Authenticate(http.HandlerFunc(handlerGetCurrentUser)))
+	mux.Handle("POST /api/auth/current-user",middlewares.Authenticate(http.HandlerFunc(handlerGetCurrentUser)))
 
 	//Users
 	mux.Handle("GET /api/users/{id}",middlewares.Authenticate(http.HandlerFunc(handlerGetUserByID)))

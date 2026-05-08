@@ -52,7 +52,7 @@ func main() {
 		log.Printf("Email login, POST http://%s/api/auth/login-email",server.Addr)
 		log.Printf("Logout, POST http://%s/api/auth/logout (requires auth)",server.Addr)
 		log.Printf("Session Refresh, POST http://%s/api/auth/refresh-session (requires auth)",server.Addr)
-		log.Printf("Get Current User, GET http://%s/api/auth/current-user (requires auth)",server.Addr)
+		log.Printf("Current User, POST http://%s/api/auth/current-user (requires auth)",server.Addr)
 
 		//Users
 		log.Printf("Get User By Id, GET http://%s/api/users/{user_id} (requires auth)",server.Addr)
