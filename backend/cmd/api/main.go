@@ -53,6 +53,13 @@ func main() {
 		//Users
 		log.Printf("Get User By Id, GET http://%s/api/users/{user_id} (requires auth)",server.Addr)
 
+		// Conversations
+		log.Printf("Get Conversations, GET http://%s/api/conversations/privates/{private_id} (requires auth)",server.Addr)
+		log.Printf("Join Conversation, POST http://%s/api/conversations/privates/join (requires auth)",server.Addr)
+		log.Printf("Get All Conversations, GET http://%s/api/conversations (requires auth)",server.Addr)
+		log.Printf("Get Conversation Messages (Paginated), GET http://%s/api/conversations/privates/{private_id}/messages?page=1&limit=20 (requires auth)",server.Addr)
+		
+
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			log.Fatal("Error starting server: ", err)

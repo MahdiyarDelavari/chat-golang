@@ -21,5 +21,8 @@ func RegisterRoutes() *http.ServeMux {
 	//Users
 	mux.Handle("GET /api/users/{id}",middlewares.Authenticate(http.HandlerFunc(handlerGetUserByID)))
 
+	//Conversations
+	
+
 	return mux
 }
