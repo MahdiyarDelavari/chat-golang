@@ -30,3 +30,19 @@ func (h *Hub) broadcastToAll(event Event) {
 		}
 	}
 }
+
+func (h *Hub) GetClients(userId int64) ([]*Client, bool) {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	
+	connections, ok := h.Clients[userId]
+	if !ok || len(connections) == 0 {
+		return nil, false
+	}
+
+	clients := make([]*Client, 0, len(connections))
+	for client := range connections {
+		clients = append(clients, client)
+	}
+	return clients, true
+}
