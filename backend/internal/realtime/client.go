@@ -31,6 +31,10 @@ func (c *Client) SendEvent(event Event) {
 	}
 }
 
+func (c *Client) SendChannel() <-chan Event {
+	return c.send
+}
+
 func (c *Client) Close() {
 	c.once.Do(func() {
 		if c.Conn != nil {

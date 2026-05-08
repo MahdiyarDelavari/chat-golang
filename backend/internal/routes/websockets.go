@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/coder/websocket"
+	"github.com/coder/websocket/wsjson"
 )
 
 func handleWebsocket(hub *realtime.Hub, w http.ResponseWriter, r *http.Request) {
@@ -91,3 +92,21 @@ func heartbeat(ctx context.Context, client *realtime.Client) {
 	}
 }
 
+
+func writePump(ctx context.Context, client *realtime.Client) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+
+		case event, ok := <-client.SendChannel():
+			if !ok {
+				return
+			}
+
+			writeCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
+			_ = wsjson.Write(writeCtx, client.Conn, event)
+			cancel()
+		}
+	}
+}
