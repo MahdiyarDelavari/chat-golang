@@ -4,6 +4,7 @@ import (
 	"backend/internal/config"
 	"backend/internal/db"
 	"backend/internal/middlewares"
+	"backend/internal/realtime"
 	"backend/internal/routes"
 	"backend/internal/utils"
 	"context"
@@ -22,6 +23,8 @@ func main() {
 
 	db.InitDB(cfg.DBPath,cfg.DBName)
 	defer db.CloseDB()
+
+	hub := realtime.NewHub()
 
 	mux := routes.RegisterRoutes()
 
@@ -84,6 +87,8 @@ func main() {
 	} else{
 		log.Println("Server gracefully stopped")
 	}
+
+	hub.Shutdown()
 	
 	signal.Stop(shutdownCh)
 	close(shutdownCh)
