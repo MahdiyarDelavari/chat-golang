@@ -6,8 +6,10 @@ import (
 	"backend/internal/realtime"
 	"backend/internal/utils"
 	"context"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/coder/websocket"
 )
@@ -60,8 +62,32 @@ func handleWebsocket(hub *realtime.Hub, w http.ResponseWriter, r *http.Request) 
 	go writePump(ctx, client)
 	readPump(ctx, cancel, hub , client)
 
-
-
-
-
 }
+
+
+func heartbeat(ctx context.Context, client *realtime.Client) {
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			pingCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+			err := client.Conn.Ping(pingCtx)
+			if err != nil {
+				log.Println("Ping failed, disconnecting client.")
+				cancel()
+				return
+			}
+			cancel()
+
+			client.SendEvent(realtime.Event{
+			EventType: realtime.EventHeartbeat,
+			Payload:   nil,
+		})
+		}
+	}
+}
+
