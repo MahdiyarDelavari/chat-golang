@@ -41,3 +41,14 @@ X-Platform: web
 {
   "refreshToken": "<refresh_token>"
 }
+
+
+### Get Current User
+GET http://localhost:8082/api/auth/current-user
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer <access_token>
+
+{
+  "refreshToken": "<refresh_token>"
+}

@@ -182,3 +182,36 @@ func handlerRefreshSession(w http.ResponseWriter, r *http.Request) {
 		"refresh_token": refreshToken,
 	})
 }
+
+func handlerGetCurrentUser(w http.ResponseWriter, r *http.Request) {
+	platform := strings.ToLower(strings.TrimSpace(r.Header.Get(string(middlewares.CtxPlatform))))
+	if platform != middlewares.PlatformWeb && platform != middlewares.PlatformMobile {
+		utils.JSON(w, http.StatusBadRequest, false, "Invalid platform", nil)
+		return
+	}
+
+	var req struct {
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		utils.JSON(w, http.StatusBadRequest, false, "Invalid request body", nil)
+		return
+	}
+
+	if req.RefreshToken == "" {
+		utils.JSON(w, http.StatusBadRequest, false, "Refresh token is required", nil)
+		return
+	}
+
+	existingUser, err := models.GetUserByRefreshToken(req.RefreshToken, platform)
+	if err != nil || existingUser == nil {
+		utils.JSON(w, http.StatusUnauthorized, false, "Invalid credintials", nil)
+		return
+	}
+
+	utils.JSON(w, http.StatusOK, true, "User fetched successfully", map[string]any{
+		"user": existingUser,
+	})
+}

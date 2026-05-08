@@ -48,6 +48,7 @@ func main() {
 		log.Printf("Email login, POST http://%s/api/auth/login-email",server.Addr)
 		log.Printf("Logout, POST http://%s/api/auth/logout (requires auth)",server.Addr)
 		log.Printf("Session Refresh, POST http://%s/api/auth/refresh-session (requires auth)",server.Addr)
+		log.Printf("Get Current User, GET http://%s/api/auth/current-user (requires auth)",server.Addr)
 
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
