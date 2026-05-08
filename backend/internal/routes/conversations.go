@@ -60,3 +60,15 @@ func handlerJoinPrivate(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSON(w, http.StatusOK, true, "Joined private conversation successfully", private)
 }
+
+func handlerGetConversations(w http.ResponseWriter, r *http.Request) {
+	userId := r.Context().Value(middlewares.CtxUserID).(int64)
+
+	privates, err := models.GetPrivatesForUser(userId)
+	if err != nil {
+		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while fetching conversations", nil)
+		return
+	}
+
+	utils.JSON(w, http.StatusOK, true, "Conversations fetched successfully", privates)
+}
