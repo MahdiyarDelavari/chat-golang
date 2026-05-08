@@ -114,3 +114,30 @@ func (h *Hub) RegisterClientConnection(client *Client) {
 		}()
 	}
 }
+
+func (h *Hub) UnregisterClientConnection(client *Client) {
+	h.mu.Lock()
+	connections, ok := h.Clients[client.User.ID]
+	if !ok {
+		h.mu.Unlock()
+		return
+	}
+	delete(connections, client)
+	lastConnection := len(connections) == 0
+	if lastConnection {
+		delete(h.Clients, client.User.ID)
+	}
+	h.mu.Unlock()
+
+	if lastConnection {
+		h.broadcastToAll(Event{
+			EventType: EventUserOffline,
+			Payload: map[string]any{
+				"user_id": client.User.ID,
+				"name":    client.User.Name,
+				"email":   client.User.Email,
+			},
+		})
+	}
+	
+}
