@@ -10,7 +10,7 @@ Accept: application/json
 
 {
   "name": "John",
-  "email": "john@example.com",
+  "email": "johdn@example.com",
   "password": "password123"
 }
 
@@ -21,6 +21,12 @@ Accept: application/json
 X-Platform: web
 
 {
-  "email": "john@example.com",
+  "email": "johdn@example.com",
   "password": "password123"
 }
+
+### Logout
+POST http://localhost:8082/api/auth/logout
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJuYW1lIjoiSm9obiIsIlgtUGxhdGZvcm0iOiJ3ZWIiLCJzdWIiOiIyIiwiZXhwIjoxNzc4MjQ1Njk2fQ.ZIJUsTyS-KT2am9ejU91CW0fT80azR7IWMue0oluSZI
+X-Platform: web

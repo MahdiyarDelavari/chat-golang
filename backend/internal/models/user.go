@@ -64,3 +64,16 @@ func UpdateUserRefreshToken(userID int64, platform string, refreshToken string) 
 		return errors.New("invalid platform")
 	}
 }
+
+func DeleteUserRefreshToken(userID int64, platform string) error {
+	switch platform {
+	case middlewares.PlatformWeb:
+		_, err := db.DB.Exec("UPDATE users SET refresh_token_web = NULL, refresh_token_web_at = NULL WHERE id = ?", userID)
+		return err
+	case middlewares.PlatformMobile:
+		_, err := db.DB.Exec("UPDATE users SET refresh_token_mobile = NULL, refresh_token_mobile_at = NULL WHERE id = ?", userID)
+		return err
+	default:
+		return errors.New("invalid platform")
+	}
+}

@@ -110,3 +110,23 @@ func handlerEmailLogin(w http.ResponseWriter, r *http.Request){
 		"refresh_token": refreshToken,
 	})
 }
+
+func handlerLogout(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(middlewares.CtxUserID).(int64)
+	if !ok {
+		utils.JSON(w, http.StatusUnauthorized, false, "Unauthorized", nil)
+		return
+	}
+	platform, ok := r.Context().Value(middlewares.CtxPlatform).(string)
+	if !ok {
+		utils.JSON(w, http.StatusUnauthorized, false, "Unauthorized", nil)
+		return
+	}
+	err := models.DeleteUserRefreshToken(userID, platform)
+	if err != nil {
+		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while logging out", nil)
+		return
+	}
+	utils.JSON(w, http.StatusOK, true, "Logout successful", nil)
+
+}
