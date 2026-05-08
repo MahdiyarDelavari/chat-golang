@@ -10,6 +10,7 @@ func RegisterRoutes() *http.ServeMux {
 
 	//Health check route
 	mux.HandleFunc("GET /api/health-check-http", handleHealthCheckHTTP)
+	mux.HandleFunc("GET /api/health-check-ws", handleHealthCheckWs)
 
 	//Auths
 	mux.HandleFunc("POST /api/auth/register-email",handlerEmailRegister) 
@@ -30,6 +31,7 @@ func RegisterRoutes() *http.ServeMux {
 
 	//Files
 	mux.Handle("POST /api/files/{private_id}",middlewares.Authenticate(http.HandlerFunc(handlerFileUpload)))
+	mux.Handle("GET /api/files/", middlewares.Authenticate(handlerGetFile()))
 
 	return mux
 }

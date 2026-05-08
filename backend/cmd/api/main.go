@@ -42,7 +42,8 @@ func main() {
 
 		// Log health check endpoint
 		log.Printf("Health Check Endpoint: http://%s/api/health-check-http",server.Addr)
-		
+		log.Printf("Health Check WS, GET: ws://%s/api/health-check-ws", server.Addr)
+
 		// Log auth endpoints
 		log.Printf("Email register, POST http://%s/api/auth/register-email",server.Addr)
 		log.Printf("Email login, POST http://%s/api/auth/login-email",server.Addr)
@@ -58,7 +59,11 @@ func main() {
 		log.Printf("Join Conversation, POST http://%s/api/conversations/privates/join (requires auth)",server.Addr)
 		log.Printf("Get All Conversations, GET http://%s/api/conversations (requires auth)",server.Addr)
 		log.Printf("Get Conversation Messages (Paginated), GET http://%s/api/conversations/privates/{private_id}/messages?page=1&limit=20 (requires auth)",server.Addr)
-		
+
+		// Files
+		log.Printf("File Upload, POST http://%s/api/files/{private_id} (requires auth)",server.Addr)
+		log.Printf("File Download, GET http://%s/api/files/ (requires auth)",server.Addr)
+
 
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {

@@ -65,3 +65,8 @@ func handlerFileUpload(w http.ResponseWriter, r *http.Request) {
 	})
 
 }
+
+func handlerGetFile() http.Handler {
+	fs := http.FileServer(http.Dir("files"))
+	return http.StripPrefix("/api/files/", fs)
+}
