@@ -130,3 +130,55 @@ func handlerLogout(w http.ResponseWriter, r *http.Request) {
 	utils.JSON(w, http.StatusOK, true, "Logout successful", nil)
 
 }
+
+func handlerRefreshSession(w http.ResponseWriter, r *http.Request) {
+	platform := strings.ToLower(strings.TrimSpace(r.Header.Get(string(middlewares.CtxPlatform))))
+	if platform != middlewares.PlatformWeb && platform != middlewares.PlatformMobile {
+		utils.JSON(w, http.StatusBadRequest, false, "Invalid platform", nil)
+		return
+	}
+
+	var req struct {
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		utils.JSON(w, http.StatusBadRequest, false, "Invalid request body", nil)
+		return
+	}
+
+	if req.RefreshToken == "" {
+		utils.JSON(w, http.StatusBadRequest, false, "Refresh token is required", nil)
+		return
+	}
+
+	existingUser, err := models.GetUserByRefreshToken(req.RefreshToken, platform)
+	if err != nil || existingUser == nil {
+		utils.JSON(w, http.StatusUnauthorized, false, "Invalid credintials", nil)
+		return
+	}
+
+	accessToken, err := utils.GenerateJWT(existingUser.ID, existingUser.Name, platform)
+	if err != nil {
+		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while generating token", nil)
+		return
+	}
+
+	refreshToken, err := utils.GenerateRefreshToken()
+	if err != nil {
+		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while generating refresh token", nil)
+		return
+	}
+
+	err = models.UpdateUserRefreshToken(existingUser.ID, platform, refreshToken)
+	if err != nil {
+		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while saving refresh token", nil)
+		return
+	}
+
+	utils.JSON(w, http.StatusOK, true, "Login successful", map[string]any{
+		"access_token": accessToken,
+		"refresh_token": refreshToken,
+	})
+}

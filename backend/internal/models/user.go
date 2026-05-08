@@ -51,6 +51,7 @@ func CreateUserByEmail(name, email, hashedPassword string) (*User, error) {
 		CreatedAt: createdAt,
 	}, nil
 }
+
 func UpdateUserRefreshToken(userID int64, platform string, refreshToken string) error {
 	now := time.Now()
 	switch platform {
@@ -76,4 +77,28 @@ func DeleteUserRefreshToken(userID int64, platform string) error {
 	default:
 		return errors.New("invalid platform")
 	}
+}
+
+func GetUserByRefreshToken(refreshToken string, platform string) (*User, error) {
+	var user User
+
+	var row *sql.Row
+	switch platform {
+	case middlewares.PlatformWeb:
+		row = db.DB.QueryRow("SELECT id, name, email, password, refresh_token_web, refresh_token_web_at, refresh_token_mobile, refresh_token_mobile_at, created_at FROM users WHERE refresh_token_web = ?", refreshToken)
+	case middlewares.PlatformMobile:
+		row = db.DB.QueryRow("SELECT id, name, email, password, refresh_token_web, refresh_token_web_at, refresh_token_mobile, refresh_token_mobile_at, created_at FROM users WHERE refresh_token_mobile = ?", refreshToken)
+	default:
+		return nil, errors.New("invalid platform")
+	}
+
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.RefreshTokenWeb, &user.RefreshTokenWebAt, &user.RefreshTokenMobile, &user.RefreshTokenMobileAt, &user.CreatedAt)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }

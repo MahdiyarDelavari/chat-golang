@@ -28,5 +28,16 @@ X-Platform: web
 ### Logout
 POST http://localhost:8082/api/auth/logout
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJuYW1lIjoiSm9obiIsIlgtUGxhdGZvcm0iOiJ3ZWIiLCJzdWIiOiIyIiwiZXhwIjoxNzc4MjQ1Njk2fQ.ZIJUsTyS-KT2am9ejU91CW0fT80azR7IWMue0oluSZI
+Authorization: Bearer <access_token>
 X-Platform: web
+
+
+### Refresh Session
+POST http://localhost:8082/api/auth/refresh-session
+Accept: application/json
+Content-Type: application/json
+X-Platform: web
+
+{
+  "refreshToken": "<refresh_token>"
+}

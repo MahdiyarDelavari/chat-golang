@@ -38,15 +38,16 @@ func main() {
 
 	go func () {
 		// Log server start and available endpoints
-		log.Printf("server is running at http://%s",cfg.HTTPServer.Address)
+		log.Printf("server is running at http://%s",server.Addr)
 
 		// Log health check endpoint
-		log.Printf("Health Check Endpoint: http://%s/api/health-check-http",cfg.HTTPServer.Address)
+		log.Printf("Health Check Endpoint: http://%s/api/health-check-http",server.Addr)
 		
 		// Log auth endpoints
-		log.Printf("Email register, POST http://%s/api/auth/register-email",cfg.HTTPServer.Address)
-		log.Printf("Email login, POST http://%s/api/auth/login-email",cfg.HTTPServer.Address)
-		log.Printf("Logout, POST http://%s/api/auth/logout (requires auth)",cfg.HTTPServer.Address)
+		log.Printf("Email register, POST http://%s/api/auth/register-email",server.Addr)
+		log.Printf("Email login, POST http://%s/api/auth/login-email",server.Addr)
+		log.Printf("Logout, POST http://%s/api/auth/logout (requires auth)",server.Addr)
+		log.Printf("Session Refresh, POST http://%s/api/auth/refresh-session (requires auth)",server.Addr)
 
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
