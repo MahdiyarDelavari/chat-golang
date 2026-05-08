@@ -72,3 +72,53 @@ func handlerGetConversations(w http.ResponseWriter, r *http.Request) {
 
 	utils.JSON(w, http.StatusOK, true, "Conversations fetched successfully", privates)
 }
+
+func handlerGetPrivateMessages(w http.ResponseWriter, r *http.Request) {
+	privateIdStr := r.PathValue("private_id")
+	privateId, err := strconv.ParseInt(privateIdStr, 10, 64)
+	if err != nil {
+		utils.JSON(w, http.StatusBadRequest, false, "Invalid private_id", nil)
+		return
+	}
+
+	page := 1
+	limit := 20
+
+	pageStr := r.URL.Query().Get("page")
+	if pageStr != "" {
+		page, err = strconv.Atoi(pageStr)
+		if err != nil || page < 1 {
+			utils.JSON(w, http.StatusBadRequest, false, "Invalid page number", nil)
+			return
+		}
+	}
+
+	limitStr := r.URL.Query().Get("limit")
+	if limitStr != "" {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil || limit < 1 {
+			utils.JSON(w, http.StatusBadRequest, false, "Invalid limit number", nil)
+			return
+		}
+	}
+
+	messages, err := models.GetMessagesByPrivateID(privateId, page, limit+1)
+
+	if err != nil {
+		utils.JSON(w, http.StatusInternalServerError, false, "Error occurred while fetching messages", nil)
+		return
+	}
+
+	hasNextPage := false
+	if len(messages) > limit {
+		hasNextPage = true
+		messages = messages[:limit]
+	}
+
+	utils.JSON(w, http.StatusOK, true, "Messages fetched successfully", map[string]any{
+		"messages": messages,
+		"page": page,
+		"limit": limit,
+		"has_next_page": hasNextPage,
+	})
+}
