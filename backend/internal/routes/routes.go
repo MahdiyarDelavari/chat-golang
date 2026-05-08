@@ -22,7 +22,10 @@ func RegisterRoutes() *http.ServeMux {
 	mux.Handle("GET /api/users/{id}",middlewares.Authenticate(http.HandlerFunc(handlerGetUserByID)))
 
 	//Conversations
-	
+	mux.Handle("GET /api/conversations/privates/{private_id}",middlewares.Authenticate(http.HandlerFunc(handlerGetPrivate)))
+	mux.Handle("POST /api/conversations/privates/join",middlewares.Authenticate(http.HandlerFunc(handlerJoinPrivate)))
+	mux.Handle("GET /api/conversations",middlewares.Authenticate(http.HandlerFunc(handlerGetConversations)))
+	mux.Handle("GET /api/conversations/privates/{private_id}/messages",middlewares.Authenticate(http.HandlerFunc(handlerGetPrivateMessages)))
 
 	return mux
 }
