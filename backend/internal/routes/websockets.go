@@ -110,3 +110,29 @@ func writePump(ctx context.Context, client *realtime.Client) {
 		}
 	}
 }
+
+func readPump(ctx context.Context, cancel context.CancelFunc, hub *realtime.Hub, client *realtime.Client) {
+	defer cancel()
+	defer func() {
+		r := recover()
+		if r != nil {
+			log.Printf("Recovered from panic in readPump for client %d: %v", client.User.ID, r)
+		}
+	}()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+		}
+
+		var event realtime.Event
+		err := wsjson.Read(ctx, client.Conn, &event)
+		if err != nil {
+			return
+		}
+
+		handleIncomingEvent(hub, client, event)
+	}
+}
