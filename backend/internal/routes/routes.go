@@ -2,10 +2,11 @@ package routes
 
 import (
 	"backend/internal/middlewares"
+	"backend/internal/realtime"
 	"net/http"
 )
 
-func RegisterRoutes() *http.ServeMux {
+func RegisterRoutes(hub *realtime.Hub) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	//Health check route
@@ -32,6 +33,9 @@ func RegisterRoutes() *http.ServeMux {
 	//Files
 	mux.Handle("POST /api/files/{private_id}",middlewares.Authenticate(http.HandlerFunc(handlerFileUpload)))
 	mux.Handle("GET /api/files/", middlewares.Authenticate(handlerGetFile()))
+
+	//Websocket
+	mux.HandleFunc("GET /api/ws", func(w http.ResponseWriter, r *http.Request) {handleWebsocket(hub, w, r)})
 
 	return mux
 }

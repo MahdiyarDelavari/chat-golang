@@ -26,7 +26,7 @@ func main() {
 
 	hub := realtime.NewHub()
 
-	mux := routes.RegisterRoutes()
+	mux := routes.RegisterRoutes(hub)
 
 	loggerMux := middlewares.LoggingMiddleware(mux)
 	corsMux := middlewares.CorsMiddleware(loggerMux)
@@ -67,6 +67,9 @@ func main() {
 		log.Printf("File Upload, POST http://%s/api/files/{private_id} (requires auth)",server.Addr)
 		log.Printf("File Download, GET http://%s/api/files/ (requires auth)",server.Addr)
 
+
+		//Websocket
+		log.Printf("Websocket , GET ws://%s/api/ws", server.Addr)
 
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
