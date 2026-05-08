@@ -13,3 +13,14 @@ Accept: application/json
   "email": "john@example.com",
   "password": "password123"
 }
+
+### Login User (Email)
+POST http://localhost:8082/api/auth/login-email
+Content-Type: application/json
+Accept: application/json
+X-Platform: web
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}

@@ -45,6 +45,7 @@ func main() {
 		
 		// Log auth endpoints
 		log.Printf("Email register, POST http://%s/api/auth/register-email",cfg.HTTPServer.Address)
+		log.Printf("Email login, POST http://%s/api/auth/login-email",cfg.HTTPServer.Address)
 
 		err:=server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {

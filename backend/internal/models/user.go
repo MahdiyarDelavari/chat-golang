@@ -2,7 +2,9 @@ package models
 
 import (
 	"backend/internal/db"
+	"backend/internal/middlewares"
 	"database/sql"
+	"errors"
 	"time"
 )
 
@@ -48,4 +50,17 @@ func CreateUserByEmail(name, email, hashedPassword string) (*User, error) {
 		Email: email,
 		CreatedAt: createdAt,
 	}, nil
+}
+func UpdateUserRefreshToken(userID int64, platform string, refreshToken string) error {
+	now := time.Now()
+	switch platform {
+	case middlewares.PlatformWeb:
+		_, err := db.DB.Exec("UPDATE users SET refresh_token_web = ?, refresh_token_web_at = ? WHERE id = ?", refreshToken, now, userID)
+		return err
+	case middlewares.PlatformMobile:
+		_, err := db.DB.Exec("UPDATE users SET refresh_token_mobile = ?, refresh_token_mobile_at = ? WHERE id = ?", refreshToken, now, userID)
+		return err
+	default:
+		return errors.New("invalid platform")
+	}
 }

@@ -10,6 +10,7 @@ func RegisterRoutes() *http.ServeMux {
 
 	//Auths
 	mux.HandleFunc("POST /api/auth/register-email",handlerEmailRegister) 
+	mux.HandleFunc("POST /api/auth/login-email",handlerEmailLogin)
 
 	return mux
 }
